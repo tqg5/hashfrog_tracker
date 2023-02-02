@@ -15,7 +15,9 @@ const LocationHint = props => {
     backgroundColor = "#333", // background color for input
     showBoss = true, // Show or not the left boss icon
     bossIcons = [], // to override the boss icons
+    pathIcons = [], // to override the path icons
     showItems = true, // Show or not the right icons
+    showPath = true, // Show or not the path modal
     itemsIcons = [], //
   } = props;
 
@@ -39,6 +41,16 @@ const LocationHint = props => {
 
   return (
     <div style={{ width, display: "flex" }}>
+      {showPath && hasValue && (
+        <Element
+          id={`locations_path_${id}`}
+          name={`locations_path_${name}`}
+          type="simple"
+          size={[20, 20]}
+          icons={pathIcons}
+          customStyle={{ marginRight: "0.25rem" }}
+        />
+      )}
       {showBoss && hasValue && (
         <Element
           id={`locations_boss_${id}`}

@@ -1023,5 +1023,14 @@
       "boss_tw_25x25.png"
     ],
     "receiver": false
+  },
+  {
+    "id": "b912ad0bfcc942ccac7c4584cd74c922",
+    "type": "simple",
+    "name": "path",
+    "displayName": "Path",
+    "size": [25, 25],
+    "icons": ["gossip_stone_32x32.png"],
+    "receiver": false
   }
 ]

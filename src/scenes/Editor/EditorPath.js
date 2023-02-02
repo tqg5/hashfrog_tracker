@@ -1,5 +1,4 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-
 import labelsJSON from "../../data/labels.json";
 import { generateId } from "../../utils/utils";
 
@@ -17,8 +16,8 @@ const toNumber = [
   "hintNumber",
 ];
 
-const EditorComponent = ({ component, setComponent, combinedElements }) => {
-  let { position, type, displayName = "" } = component;
+const EditorPath = ({ path, setPath, combinedElements }) => {
+  let { position, type, displayName = "" } = path;
   let [coordX, coordY] = position;
 
   const handleTypeChange = useCallback(
@@ -27,70 +26,51 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
 
       switch (value) {
         case "element":
-          setComponent(prev => ({
-            id: component.id,
+          setPath({
+            id: path.id,
             type: "element",
-            displayName: prev?.displayName || "",
             elementId: "a081121b16f84366bf16e16ca90cd23f",
-            position: component.position,
+            position: path.position,
             size: [25, 25],
             receiver: false,
             dragCurrent: false,
             selectedStartingIndex: 0,
             countConfig: [0, 5],
             labelStartingIndex: 0,
-          }));
+          });
           break;
         case "table":
-          setComponent(prev => ({
-            id: component.id,
+          setPath({
+            id: path.id,
             type: "table",
-            displayName: prev?.displayName || "",
-            position: component.position,
+            position: path.position,
             columns: 3,
             padding: "2px",
             elements: [],
             elementsSize: [25, 25],
-          }));
-          break;
-        case "sometimeshint":
-          setComponent(prev => ({
-            id: component.id,
-            type: "sometimeshint",
-            displayName: prev?.displayName || "",
-            elementId: "4c1b24c3e3954038b14f4daa3656e0b5",
-            position: component.position,
-            labels: "sometimes",
-            width: 150,
-            color: "#ffffff",
-            backgroundColor: "#333333",
-            showIcon: true,
-            inverted: false,
-            dual: false,
-          }));
+          });
           break;
         case "locationhint":
-          setComponent(prev => ({
-            id: component.id,
+          setPath({
+            id: path.id,
             type: "locationhint",
-            displayName: prev?.displayName || "",
             elementId: "4c1b24c3e3954038b14f4daa3656e0b5",
-            position: component.position,
+            position: path.position,
             labels: "locations",
             width: 250,
             color: "#ffffff",
             backgroundColor: "#4a8ab6",
             showBoss: true,
             showItems: true,
-          }));
+          });
           break;
+
         case "hinttable":
-          setComponent(prev => ({
-            id: component.id,
+          setPath({
+            id: path.id,
             type: "hinttable",
-            displayName: prev?.displayName || "",
             elementId: "4c1b24c3e3954038b14f4daa3656e0b5",
-            position: component.position,
+            position: path.position,
             hintType: "sometimes",
             hintNumber: 1,
             columns: 1,
@@ -103,27 +83,25 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
             inverted: false,
             showBoss: true,
             showItems: true,
-            dual: false,
-          }));
+          });
           break;
         case "label":
-          setComponent(prev => ({
-            id: component.id,
+          setPath({
+            id: path.id,
             type: "label",
-            displayName: prev?.displayName || "",
-            position: component.position,
+            position: path.position,
             color: "#ffffff",
             backgroundColor: "#000000",
             padding: "2px",
             text: "Label Text",
             fontSize: "12px",
-          }));
+          });
           break;
         case "path":
-          setComponent({
-            id: component.id,
+          setPath({
+            id: path.id,
             type: "path",
-            position: component.position,
+            position: path.position,
             backgroundColor: "#000000",
             elementsSize: [25, 25],
           });
@@ -131,7 +109,7 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
           break;
       }
     },
-    [component, setComponent],
+    [path, setPath],
   );
 
   const handleChange = useCallback(
@@ -145,7 +123,7 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         // Coords specific
         case "coordX":
         case "coordY": {
-          setComponent(prev => ({
+          setPath(prev => ({
             ...prev,
             position: name === "coordX" ? [value, prev.position[1]] : [prev.position[0], value],
           }));
@@ -154,7 +132,7 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         // Size specific
         case "size_width":
         case "size_height": {
-          setComponent(prev => {
+          setPath(prev => {
             let property = "";
 
             if (prev.type === "element") property = "size";
@@ -171,7 +149,7 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         // Counter
         case "counterMin":
         case "counterMax": {
-          setComponent(prev => ({
+          setPath(prev => ({
             ...prev,
             countConfig: name === "counterMin" ? [value, prev.countConfig[1]] : [prev.countConfig[0], value],
           }));
@@ -184,9 +162,8 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         case "showIcon":
         case "inverted":
         case "dragCurrent":
-        case "receiver":
-        case "dual": {
-          setComponent(prev => ({
+        case "receiver": {
+          setPath(prev => ({
             ...prev,
             [name]: !prev[name],
           }));
@@ -194,7 +171,7 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         }
         // General
         default: {
-          setComponent(prev => ({
+          setPath(prev => ({
             ...prev,
             [name]: value,
           }));
@@ -202,40 +179,40 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         }
       }
     },
-    [setComponent],
+    [setPath],
   );
 
   // Check if element inexistent because is a custom and got deleted. Revert to an existing one.
   useEffect(() => {
-    const index = combinedElements.findIndex(x => x.id === component.elementId);
+    const index = combinedElements.findIndex(x => x.id === path.elementId);
     if (index === -1) {
-      setComponent(prev => ({
+      setPath(prev => ({
         ...prev,
         elementId: "a081121b16f84366bf16e16ca90cd23f",
       }));
     }
-  }, [combinedElements, component.elementId, setComponent]);
+  }, [combinedElements, path.elementId, setPath]);
 
   return (
     <Fragment>
-      <p className="uuid">Component Id: {component.id}</p>
+      <p className="uuid">Path Id: {path.id}</p>
       <div className="mb-2">
         <label htmlFor="name" className="form-label">
-          Component Name
+          Path Name
         </label>
         <input
           type="text"
           id="displayName"
           name="displayName"
           className="form-control form-control-sm"
-          placeholder="Component Name"
+          placeholder="Path Name"
           value={displayName}
           onChange={handleChange}
         />
       </div>
       <div className="mb-2">
         <label htmlFor="" className="form-label">
-          Component Type
+          Path Type
         </label>
         <select className="form-select form-select-sm" id="type" name="type" value={type} onChange={handleTypeChange}>
           <option value="" disabled>
@@ -252,7 +229,7 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
       </div>
       <div className="col mb-2">
         <label htmlFor="width" className="form-label">
-          Component Position
+          Path Position
         </label>
         <div className="input-group input-group-sm ">
           <input
@@ -277,27 +254,24 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         </div>
       </div>
       {type === "element" && (
-        <ElementEditor component={component} handleChange={handleChange} combinedElements={combinedElements} />
+        <ElementEditor path={path} handleChange={handleChange} combinedElements={combinedElements} />
       )}
       {type === "table" && (
-        <TableEditor component={component} handleChange={handleChange} combinedElements={combinedElements} />
-      )}
-      {type === "sometimeshint" && (
-        <SometimeshintEditor component={component} handleChange={handleChange} combinedElements={combinedElements} />
+        <TableEditor path={path} handleChange={handleChange} combinedElements={combinedElements} />
       )}
       {type === "locationhint" && (
-        <LocationhintEditor component={component} handleChange={handleChange} combinedElements={combinedElements} />
+        <LocationhintEditor path={path} handleChange={handleChange} combinedElements={combinedElements} />
       )}
       {type === "hinttable" && (
-        <HintTableEditor component={component} handleChange={handleChange} combinedElements={combinedElements} />
+        <HintTableEditor path={path} handleChange={handleChange} combinedElements={combinedElements} />
       )}
-      {type === "label" && <LabelEditor component={component} handleChange={handleChange} />}
-      {type === "path" && <PathEditor component={component} handleChange={handleChange} />}
+      {type === "label" && <LabelEditor path={path} handleChange={handleChange} />}
+      {type === "path" && <PathEditor path={path} handleChange={handleChange} />}
     </Fragment>
   );
 };
 
-const PathEditor = ({ component, handleChange, combinedElements }) => {
+const PathEditor = ({ path, handleChange, combinedElements }) => {
   return (
     <Fragment>
       <div className="col mb-2">
@@ -311,7 +285,7 @@ const PathEditor = ({ component, handleChange, combinedElements }) => {
             name="size_width"
             className="form-control"
             placeholder="Element Width"
-            value={component.elementsSize[0]}
+            value={path.elementsSize[0]}
             onChange={handleChange}
           />
           <span className="input-group-text">X</span>
@@ -321,7 +295,7 @@ const PathEditor = ({ component, handleChange, combinedElements }) => {
             name="size_height"
             className="form-control"
             placeholder="Element Height"
-            value={component.elementsSize[1]}
+            value={path.elementsSize[1]}
             onChange={handleChange}
           />
         </div>
@@ -338,7 +312,7 @@ const PathEditor = ({ component, handleChange, combinedElements }) => {
               id="backgroundColor"
               name="backgroundColor"
               title="Choose background color"
-              value={component.backgroundColor}
+              value={path.backgroundColor}
               onChange={handleChange}
             />
           </div>
@@ -351,10 +325,10 @@ const PathEditor = ({ component, handleChange, combinedElements }) => {
   );
 };
 
-const ElementEditor = ({ component, handleChange, combinedElements }) => {
+const ElementEditor = ({ path, handleChange, combinedElements }) => {
   const element = useMemo(() => {
-    return combinedElements.find(x => x.id === component.elementId);
-  }, [combinedElements, component.elementId]);
+    return combinedElements.find(x => x.id === path.elementId);
+  }, [combinedElements, path.elementId]);
 
   if (!element) return null;
 
@@ -368,7 +342,7 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
           className="form-select form-select-sm"
           id="elementId"
           name="elementId"
-          value={component.elementId}
+          value={path.elementId}
           onChange={handleChange}
         >
           {combinedElements.map(element => (
@@ -389,7 +363,7 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
             name="size_width"
             className="form-control"
             placeholder="Element Width"
-            value={component.size[0]}
+            value={path.size[0]}
             onChange={handleChange}
           />
           <span className="input-group-text">X</span>
@@ -399,7 +373,7 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
             name="size_height"
             className="form-control"
             placeholder="Element Height"
-            value={component.size[1]}
+            value={path.size[1]}
             onChange={handleChange}
           />
         </div>
@@ -416,7 +390,7 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
               name="counterMin"
               className="form-control"
               placeholder="Counter Min"
-              value={component.countConfig[0]}
+              value={path.countConfig[0]}
               onChange={handleChange}
             />
             <span className="input-group-text">To</span>
@@ -426,7 +400,7 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
               name="counterMax"
               className="form-control"
               placeholder="Counter Max"
-              value={component.countConfig[1]}
+              value={path.countConfig[1]}
               onChange={handleChange}
             />
           </div>
@@ -444,7 +418,7 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
               name="selectedStartingIndex"
               className="form-control form-control-sm"
               placeholder="Selected Starting Index"
-              value={component.selectedStartingIndex}
+              value={path.selectedStartingIndex}
               onChange={handleChange}
               min={0}
               max={element.icons.length - 1}
@@ -460,7 +434,7 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
               name="labelStartingIndex"
               className="form-control form-control-sm"
               placeholder="Label Starting Index"
-              value={component.labelStartingIndex}
+              value={path.labelStartingIndex}
               onChange={handleChange}
               min={0}
               max={element?.label?.length - 1 || 0}
@@ -475,8 +449,8 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
           className="form-check-input"
           id="receiver"
           name="receiver"
-          checked={component.receiver}
-          value={component.receiver}
+          checked={path.receiver}
+          value={path.receiver}
           onChange={handleChange}
         />
         <label htmlFor="receiver" className="form-check-label">
@@ -489,8 +463,8 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
           className="form-check-input"
           id="dragCurrent"
           name="dragCurrent"
-          checked={component.dragCurrent}
-          value={component.dragCurrent}
+          checked={path.dragCurrent}
+          value={path.dragCurrent}
           onChange={handleChange}
         />
         <label htmlFor="dragCurrent" className="form-check-label">
@@ -501,8 +475,8 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
   );
 };
 
-const TableEditor = ({ component, handleChange, combinedElements }) => {
-  const [elements, setElements] = useState([...component.elements.map(x => ({ id: generateId(), value: x }))]);
+const TableEditor = ({ path, handleChange, combinedElements }) => {
+  const [elements, setElements] = useState([...path.elements.map(x => ({ id: generateId(), value: x }))]);
   const [element, setElement] = useState("default_hashfrog");
   const [draggedElement, setDraggedElement] = useState(null);
 
@@ -573,7 +547,7 @@ const TableEditor = ({ component, handleChange, combinedElements }) => {
             name="size_width"
             className="form-control"
             placeholder="Element Width"
-            value={component.elementsSize[0]}
+            value={path.elementsSize[0]}
             onChange={handleChange}
           />
           <span className="input-group-text">X</span>
@@ -583,7 +557,7 @@ const TableEditor = ({ component, handleChange, combinedElements }) => {
             name="size_height"
             className="form-control"
             placeholder="Element Height"
-            value={component.elementsSize[1]}
+            value={path.elementsSize[1]}
             onChange={handleChange}
           />
         </div>
@@ -599,7 +573,7 @@ const TableEditor = ({ component, handleChange, combinedElements }) => {
             name="padding"
             className="form-control form-control-sm"
             placeholder="Padding for items"
-            value={component.padding}
+            value={path.padding}
             onChange={handleChange}
           />
         </div>
@@ -613,7 +587,7 @@ const TableEditor = ({ component, handleChange, combinedElements }) => {
             name="columns"
             className="form-control form-control-sm"
             placeholder="Number of Columns"
-            value={component.columns}
+            value={path.columns}
             onChange={handleChange}
             min={1}
           />
@@ -668,7 +642,7 @@ const TableEditor = ({ component, handleChange, combinedElements }) => {
   );
 };
 
-const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
+const LocationhintEditor = ({ path, handleChange, combinedElements }) => {
   return (
     <Fragment>
       <div className="mb-2">
@@ -679,7 +653,7 @@ const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
           className="form-select form-select-sm"
           id="elementId"
           name="elementId"
-          value={component.elementId}
+          value={path.elementId}
           onChange={handleChange}
         >
           {combinedElements.map(element => (
@@ -697,7 +671,7 @@ const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
           className="form-select form-select-sm"
           id="labels"
           name="labels"
-          value={component.labels}
+          value={path.labels}
           onChange={handleChange}
         >
           {Object.keys(labelsJSON).map(key => (
@@ -709,7 +683,7 @@ const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
       </div>
       <div className="mb-2">
         <label htmlFor="width" className="form-label">
-          Component Width
+          Path Width
         </label>
         <input
           type="number"
@@ -717,7 +691,7 @@ const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
           name="width"
           className="form-control form-control-sm"
           placeholder="Element Width"
-          value={component.width}
+          value={path.width}
           onChange={handleChange}
         />
       </div>
@@ -734,7 +708,7 @@ const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
             id="color"
             name="color"
             title="Choose text color"
-            value={component.color}
+            value={path.color}
             onChange={handleChange}
           />
         </div>
@@ -745,138 +719,7 @@ const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
             id="backgroundColor"
             name="backgroundColor"
             title="Choose background color"
-            value={component.backgroundColor}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="col">
-          <p className="uuid">Wheel Click changes the hue of background color.</p>
-        </div>
-      </div>
-      <div className="form-check mb-2">
-        <input
-          type="checkbox"
-          className="form-check-input"
-          id="showIcon"
-          name="showIcon"
-          checked={component.showIcon}
-          value={component.showIcon}
-          onChange={handleChange}
-        />
-        <label htmlFor="showIcon" className="form-check-label">
-          Show Icon
-        </label>
-      </div>
-      <div className="form-check mb-2">
-        <input
-          type="checkbox"
-          className="form-check-input"
-          id="inverted"
-          name="inverted"
-          checked={component.inverted}
-          value={component.inverted}
-          onChange={handleChange}
-        />
-        <label htmlFor="inverted" className="form-check-label">
-          Reverse Icon
-        </label>
-      </div>
-      <div className="form-check mb-2">
-        <input
-          type="checkbox"
-          className="form-check-input"
-          id="dual"
-          name="dual"
-          checked={component.dual}
-          value={component.dual}
-          onChange={handleChange}
-        />
-        <label htmlFor="dual" className="form-check-label">
-          Dual Hint
-        </label>
-      </div>
-    </Fragment>
-  );
-};
-
-const LocationhintEditor = ({ component, handleChange, combinedElements }) => {
-  return (
-    <Fragment>
-      <div className="mb-2">
-        <label htmlFor="elementId" className="form-label">
-          Element (Item / Equipment / Others)
-        </label>
-        <select
-          className="form-select form-select-sm"
-          id="elementId"
-          name="elementId"
-          value={component.elementId}
-          onChange={handleChange}
-        >
-          {combinedElements.map(element => (
-            <option key={element.id} value={element.id}>
-              {element.displayName}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="mb-2">
-        <label htmlFor="labels" className="form-label">
-          Label Pool
-        </label>
-        <select
-          className="form-select form-select-sm"
-          id="labels"
-          name="labels"
-          value={component.labels}
-          onChange={handleChange}
-        >
-          {Object.keys(labelsJSON).map(key => (
-            <option key={key} value={key}>
-              {key}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="mb-2">
-        <label htmlFor="width" className="form-label">
-          Component Width
-        </label>
-        <input
-          type="number"
-          id="width"
-          name="width"
-          className="form-control form-control-sm"
-          placeholder="Element Width"
-          value={component.width}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="row">
-        <div className="col-12">
-          <label htmlFor="color" className="form-label">
-            Text Color & Background Color
-          </label>
-        </div>
-        <div className="col-6 mb-2">
-          <input
-            type="color"
-            className="form-control form-control-sm"
-            id="color"
-            name="color"
-            title="Choose text color"
-            value={component.color}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="col-6 mb-2">
-          <input
-            type="color"
-            className="form-control form-control-sm"
-            id="backgroundColor"
-            name="backgroundColor"
-            title="Choose background color"
-            value={component.backgroundColor}
+            value={path.backgroundColor}
             onChange={handleChange}
           />
         </div>
@@ -890,8 +733,8 @@ const LocationhintEditor = ({ component, handleChange, combinedElements }) => {
           className="form-check-input"
           id="showBoss"
           name="showBoss"
-          checked={component.showBoss}
-          value={component.showBoss}
+          checked={path.showBoss}
+          value={path.showBoss}
           onChange={handleChange}
         />
         <label htmlFor="showBoss" className="form-check-label">
@@ -904,12 +747,12 @@ const LocationhintEditor = ({ component, handleChange, combinedElements }) => {
           className="form-check-input"
           id="showItems"
           name="showItems"
-          checked={component.showItems}
-          value={component.showItems}
+          checked={path.showItems}
+          value={path.showItems}
           onChange={handleChange}
         />
         <label htmlFor="showItems" className="form-check-label">
-          Show Path
+          Show Items
         </label>
       </div>
       <div className="form-check mb-2">
@@ -918,8 +761,8 @@ const LocationhintEditor = ({ component, handleChange, combinedElements }) => {
           className="form-check-input"
           id="showPath"
           name="showPath"
-          checked={component.showPath}
-          value={component.showPath}
+          checked={path.showPath}
+          value={path.showPath}
           onChange={handleChange}
         />
         <label htmlFor="showPath" className="form-check-label">
@@ -930,7 +773,7 @@ const LocationhintEditor = ({ component, handleChange, combinedElements }) => {
   );
 };
 
-const HintTableEditor = ({ component, handleChange, combinedElements }) => {
+const HintTableEditor = ({ path, handleChange, combinedElements }) => {
   return (
     <Fragment>
       <div className="mb-2">
@@ -941,7 +784,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
           className="form-select form-select-sm"
           id="hintType"
           name="hintType"
-          value={component.hintType}
+          value={path.hintType}
           onChange={handleChange}
         >
           <option value="" disabled>
@@ -959,7 +802,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
           className="form-select form-select-sm"
           id="labels"
           name="labels"
-          value={component.labels}
+          value={path.labels}
           onChange={handleChange}
         >
           {Object.keys(labelsJSON).map(key => (
@@ -977,7 +820,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
           className="form-select form-select-sm"
           id="elementId"
           name="elementId"
-          value={component.elementId}
+          value={path.elementId}
           onChange={handleChange}
         >
           {combinedElements.map(element => (
@@ -998,7 +841,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
             name="hintNumber"
             className="form-control form-control-sm"
             placeholder="Hint Number"
-            value={component.hintNumber}
+            value={path.hintNumber}
             onChange={handleChange}
             min={1}
           />
@@ -1013,7 +856,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
             name="columns"
             className="form-control form-control-sm"
             placeholder="Table Columns"
-            value={component.columns}
+            value={path.columns}
             onChange={handleChange}
             min={1}
           />
@@ -1030,7 +873,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
             name="width"
             className="form-control form-control-sm"
             placeholder="Element Width"
-            value={component.width}
+            value={path.width}
             onChange={handleChange}
           />
         </div>
@@ -1044,7 +887,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
             name="padding"
             className="form-control form-control-sm"
             placeholder="Padding for hints"
-            value={component.padding}
+            value={path.padding}
             onChange={handleChange}
           />
         </div>
@@ -1065,7 +908,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
             id="color"
             name="color"
             title="Choose text color"
-            value={component.color}
+            value={path.color}
             onChange={handleChange}
           />
         </div>
@@ -1076,7 +919,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
             id="backgroundColor"
             name="backgroundColor"
             title="Choose background color"
-            value={component.backgroundColor}
+            value={path.backgroundColor}
             onChange={handleChange}
           />
         </div>
@@ -1084,7 +927,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
           <p className="uuid">Wheel Click changes the hue of background color.</p>
         </div>
       </div>
-      {component.hintType === "sometimes" && (
+      {path.hintType === "sometimes" && (
         <Fragment>
           <div className="form-check mb-2">
             <input
@@ -1092,8 +935,8 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
               className="form-check-input"
               id="showIcon"
               name="showIcon"
-              checked={component.showIcon}
-              value={component.showIcon}
+              checked={path.showIcon}
+              value={path.showIcon}
               onChange={handleChange}
             />
             <label htmlFor="showIcon" className="form-check-label">
@@ -1106,31 +949,17 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
               className="form-check-input"
               id="inverted"
               name="inverted"
-              checked={component.inverted}
-              value={component.inverted}
+              checked={path.inverted}
+              value={path.inverted}
               onChange={handleChange}
             />
             <label htmlFor="inverted" className="form-check-label">
               Reverse Icon
             </label>
           </div>
-          <div className="form-check mb-2">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="dual"
-              name="dual"
-              checked={component.dual}
-              value={component.dual}
-              onChange={handleChange}
-            />
-            <label htmlFor="dual" className="form-check-label">
-              Dual Hint
-            </label>
-          </div>
         </Fragment>
       )}
-      {component.hintType === "location" && (
+      {path.hintType === "location" && (
         <Fragment>
           <div className="form-check mb-2">
             <input
@@ -1138,8 +967,8 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
               className="form-check-input"
               id="showBoss"
               name="showBoss"
-              checked={component.showBoss}
-              value={component.showBoss}
+              checked={path.showBoss}
+              value={path.showBoss}
               onChange={handleChange}
             />
             <label htmlFor="showBoss" className="form-check-label">
@@ -1152,8 +981,8 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
               className="form-check-input"
               id="showItems"
               name="showItems"
-              checked={component.showItems}
-              value={component.showItems}
+              checked={path.showItems}
+              value={path.showItems}
               onChange={handleChange}
             />
             <label htmlFor="showItems" className="form-check-label">
@@ -1166,8 +995,8 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
               className="form-check-input"
               id="showPath"
               name="showPath"
-              checked={component.showPath}
-              value={component.showPath}
+              checked={path.showPath}
+              value={path.showPath}
               onChange={handleChange}
             />
             <label htmlFor="showPath" className="form-check-label">
@@ -1180,7 +1009,7 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
   );
 };
 
-const LabelEditor = ({ component, handleChange }) => {
+const LabelEditor = ({ path, handleChange }) => {
   return (
     <Fragment>
       <div className="mb-2">
@@ -1193,7 +1022,7 @@ const LabelEditor = ({ component, handleChange }) => {
           name="text"
           className="form-control form-control-sm"
           placeholder="Label Text"
-          value={component.text}
+          value={path.text}
           onChange={handleChange}
         />
       </div>
@@ -1208,7 +1037,7 @@ const LabelEditor = ({ component, handleChange }) => {
             name="fontSize"
             className="form-control form-control-sm"
             placeholder="Font Size"
-            value={component.fontSize}
+            value={path.fontSize}
             onChange={handleChange}
           />
         </div>
@@ -1222,7 +1051,7 @@ const LabelEditor = ({ component, handleChange }) => {
             name="padding"
             className="form-control form-control-sm"
             placeholder="Padding for Label"
-            value={component.padding}
+            value={path.padding}
             onChange={handleChange}
           />
         </div>
@@ -1243,7 +1072,7 @@ const LabelEditor = ({ component, handleChange }) => {
             id="color"
             name="color"
             title="Choose text color"
-            value={component.color}
+            value={path.color}
             onChange={handleChange}
           />
         </div>
@@ -1254,7 +1083,7 @@ const LabelEditor = ({ component, handleChange }) => {
             id="backgroundColor"
             name="backgroundColor"
             title="Choose background color"
-            value={component.backgroundColor}
+            value={path.backgroundColor}
             onChange={handleChange}
           />
         </div>
@@ -1263,4 +1092,4 @@ const LabelEditor = ({ component, handleChange }) => {
   );
 };
 
-export default EditorComponent;
+export default EditorPath;

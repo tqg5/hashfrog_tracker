@@ -17,6 +17,7 @@ const HintsTable = props => {
     backgroundColor = "#333333",
     icons = [],
     bossIcons = [],
+    pathIcons = [],
     // Sometimes only
     showIcon = true, // Hides the icon
     inverted = false, // switch place of the icon/item
@@ -24,6 +25,7 @@ const HintsTable = props => {
     // Location only
     showBoss = true, // Show or not the left boss icon
     showItems = true, // Show or not the right icons
+    showPath = true, // Show or not the path modal
   } = props;
 
   const rows = useMemo(() => {
@@ -54,8 +56,10 @@ const HintsTable = props => {
               backgroundColor={backgroundColor}
               itemsIcons={icons}
               bossIcons={bossIcons}
+              pathIcons={pathIcons}
               showBoss={showBoss}
               showItems={showItems}
+              showPath={showPath}
             />
           </td>,
         );

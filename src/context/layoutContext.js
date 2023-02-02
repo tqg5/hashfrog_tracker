@@ -25,6 +25,9 @@ function reducer(_state, action) {
       setLayoutCache(defaultLayout);
       return { ...defaultLayout };
     }
+    case "LAYOUT_SCREEN": {
+      return { ...state, ...action.payload };
+    }
     default:
       throw new Error();
   }

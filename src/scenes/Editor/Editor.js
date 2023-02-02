@@ -6,6 +6,7 @@ import FileSaver from "file-saver";
 import EditorLayoutConfig from "./EditorLayoutConfig";
 import EditorComponentsList from "./EditorComponentsList";
 import EditorElementsList from "./EditorElementsList";
+import EditorPathsList from "./EditorPathsList";
 import useDebounce from "../../hooks/useDebounce";
 
 function prepareLayout(rawLayout) {
@@ -111,6 +112,8 @@ function prepareLayout(rawLayout) {
 
 const Editor = () => {
   const [tab, setTab] = useState(0);
+  const { state: layoutContext, dispatch } = useLayout();
+
   const [layout, setLayout] = useState({ ...baseLayout });
   const [layoutKey, setLayoutKey] = useState(Math.random());
 
@@ -158,6 +161,8 @@ const Editor = () => {
       case 2:
         TabComponent = <EditorElementsList elements={layout.elements || []} setLayout={setLayout} />;
         break;
+      case 3:
+        TabComponent = <EditorPathsList customElements={debouncedLayout.elements} paths={debouncedLayout.paths} setLayout={setLayout} />
       default:
         break;
     }
@@ -182,9 +187,22 @@ const Editor = () => {
           <button
             type="button"
             className={`btn btn-sm ${tab === 2 ? "btn-light" : "btn-dark"}`}
-            onClick={() => setTab(2)}
+            onClick={() => {
+              setTab(2);
+              dispatch({ type: "LAYOUT_SCREEN", payload: { screen: "COMPONENT" }});
+            }}
           >
             Elements
+          </button>
+          <button
+            type="button"
+            className={`btn btn-sm ${tab === 3 ? "btn-light" : "btn-dark"}`}
+            onClick={() => {
+              setTab(3);
+              dispatch({ type: "LAYOUT_SCREEN", payload: { screen: "PATH" }});
+            }}
+          >
+            Paths
           </button>
         </div>
         <>{TabComponent}</>

@@ -51,7 +51,7 @@ const EditorComponentsList = ({ components, setLayout, customElements }) => {
   const combinedElements = useMemo(() => {
     return [...elementsJSON, ...(customElements || [])];
   }, [customElements]);
-console.log('custom', combinedElements)
+
   return (
     <div className="component-list">
       <h5>Components</h5>

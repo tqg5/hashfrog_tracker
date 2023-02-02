@@ -100,7 +100,9 @@ const Layout = props => {
   }, [getCacheIcons]);
 
   const toRender = useMemo(() => {
-    return renderLayout.components.map(component => {
+    const renderedComponents = layoutContext.screen === "PATH" ? renderLayout.paths : renderLayout.components;
+
+    return renderedComponents.map(component => {
       switch (component.type) {
         case "element": {
           const element = getCacheElement(component.elementId);
@@ -157,6 +159,7 @@ const Layout = props => {
         case "locationhint": {
           const element = getCacheElement(component.elementId);
           const bossElement = getCacheElement("9e6f493869f84c19b23081bdb92bc621");
+          const pathElement = getCacheElement("b912ad0bfcc942ccac7c4584cd74c922");
           const [top, left] = component.position;
           return (
             <div key={component.id} className="layout-component" style={{ top, left }}>
@@ -167,8 +170,10 @@ const Layout = props => {
                 backgroundColor={component.backgroundColor}
                 showBoss={component.showBoss}
                 showItems={component.showItems}
+                showPath={component.showPath}
                 labels={component.labels}
                 {...(bossElement && bossElement.icons && { bossIcons: bossElement.icons })}
+                {...(pathElement && pathElement.icons && { bossIcons: pathElement.icons })}
                 {...(element && element.icons && { itemsIcons: element.icons })}
               />
             </div>
@@ -177,6 +182,7 @@ const Layout = props => {
         case "hinttable": {
           const element = getCacheElement(component.elementId);
           const bossElement = getCacheElement("9e6f493869f84c19b23081bdb92bc621");
+          const pathElement = getCacheElement("b912ad0bfcc942ccac7c4584cd74c922");
           const [top, left] = component.position;
           return (
             <div key={component.id} className="layout-component" style={{ top, left }}>
@@ -192,11 +198,13 @@ const Layout = props => {
                 backgroundColor={component.backgroundColor}
                 icons={element.icons}
                 bossIcons={bossElement.icons}
+                pathIcons={pathElement.icons}
                 showIcon={component.showIcon}
                 inverted={component.inverted}
                 showBoss={component.showBoss}
                 showItems={component.showItems}
                 dual={component.dual}
+                showPath={component.showPath}
               />
             </div>
           );
@@ -220,7 +228,7 @@ const Layout = props => {
           return null;
       }
     });
-  }, [renderLayout.components, getCacheElement]);
+  }, [renderLayout.components, getCacheElement, layoutContext.screen, renderLayout.paths]);
 
   const layoutStyles = useMemo(() => {
     const styles = {
