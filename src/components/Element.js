@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { Fragment, useCallback, useMemo, useState } from "react";
+import { useLayout } from "../context/layoutContext";
 
 import { useItems } from "../context/trackerContext";
 
@@ -35,6 +36,8 @@ const Element = props => {
 
   const { markCounter, markItem, startingIndex: trackerContextStartingIndex } = useItems(items);
 
+  const { state: layoutContext, dispatch } = useLayout();
+
   const [selected, setSelected] = useState(trackerContextStartingIndex || selectedStartingIndex);
   const [counter, setCounter] = useState(0);
   const [draggedIcon, setDraggedIcon] = useState(null);
@@ -47,6 +50,12 @@ const Element = props => {
     event => {
       event.preventDefault();
       event.stopPropagation();
+
+      if(event.target.offsetParent.id === 'b912ad0bfcc942ccac7c4584cd74c922') {
+        dispatch({ type: "LAYOUT_SCREEN", payload: { screen: "PATH" }});
+
+        return;
+      }
 
       const isCounter = !["simple", "nested", "label"].includes(type);
       let updated = isCounter ? counter : selected;
