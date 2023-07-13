@@ -24,6 +24,7 @@ const HintsTable = props => {
     // Location only
     showBoss = true, // Show or not the left boss icon
     showItems = true, // Show or not the right icons
+    swappable = false // allowing this component to be eligible for swapping icons on drag
   } = props;
 
   const rows = useMemo(() => {
@@ -41,6 +42,7 @@ const HintsTable = props => {
               showIcon={showIcon}
               inverted={inverted}
               dual={dual}
+              swappable={swappable}
             />
           </td>,
         );
@@ -56,6 +58,7 @@ const HintsTable = props => {
               bossIcons={bossIcons}
               showBoss={showBoss}
               showItems={showItems}
+              swappable={swappable}
             />
           </td>,
         );
@@ -82,6 +85,7 @@ const HintsTable = props => {
     showBoss,
     showItems,
     dual,
+    swappable
   ]);
 
   return (

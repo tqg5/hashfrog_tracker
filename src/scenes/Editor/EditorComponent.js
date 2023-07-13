@@ -174,6 +174,7 @@ const EditorComponent = ({ component, setComponent, combinedElements }) => {
         case "inverted":
         case "dragCurrent":
         case "receiver":
+        case "swappable":
         case "dual": {
           setComponent(prev => ({
             ...prev,
@@ -430,6 +431,20 @@ const ElementEditor = ({ component, handleChange, combinedElements }) => {
           Drag currently selected
         </label>
       </div>
+      <div className="form-check mb-2">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="swappable"
+          name="swappable"
+          checked={component.swappable}
+          value={component.swappable}
+          onChange={handleChange}
+        />
+        <label htmlFor="swappable" className="form-check-label">
+          Swappable (able to swap with dragged item)
+        </label>
+      </div>
     </Fragment>
   );
 };
@@ -577,6 +592,20 @@ const TableEditor = ({ component, handleChange, combinedElements }) => {
             Add
           </button>
         </div>
+      </div>
+      <div className="form-check mb-2">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="swappable"
+          name="swappable"
+          checked={component.swappable}
+          value={component.swappable}
+          onChange={handleChange}
+        />
+        <label htmlFor="swappable" className="form-check-label">
+          Swappable (able to swap with dragged item)
+        </label>
       </div>
       {elements.length > 0 && (
         <Fragment>
@@ -727,6 +756,16 @@ const SometimeshintEditor = ({ component, handleChange, combinedElements }) => {
         <label htmlFor="dual" className="form-check-label">
           Dual Hint
         </label>
+        <input
+          id="swappable"
+          name="swappable"
+          checked={component.swappable}
+          value={component.swappable}
+          onChange={handleChange}
+        />
+        <label htmlFor="swappable" className="form-check-label">
+          Swappable (able to swap with dragged item)
+        </label>
       </div>
     </Fragment>
   );
@@ -843,6 +882,20 @@ const LocationhintEditor = ({ component, handleChange, combinedElements }) => {
         />
         <label htmlFor="showItems" className="form-check-label">
           Show Items
+        </label>
+      </div>
+      <div className="form-check mb-2">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="swappable"
+          name="swappable"
+          checked={component.swappable}
+          value={component.swappable}
+          onChange={handleChange}
+        />
+        <label htmlFor="swappable" className="form-check-label">
+          Swappable (able to swap with dragged item)
         </label>
       </div>
     </Fragment>
@@ -1081,6 +1134,20 @@ const HintTableEditor = ({ component, handleChange, combinedElements }) => {
           </div>
         </Fragment>
       )}
+      <div className="form-check mb-2">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="swappable"
+          name="swappable"
+          checked={component.swappable}
+          value={component.swappable}
+          onChange={handleChange}
+        />
+        <label htmlFor="swappable" className="form-check-label">
+          Swappable (able to swap with dragged item)
+        </label>
+      </div>
     </Fragment>
   );
 };

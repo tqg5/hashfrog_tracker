@@ -17,6 +17,7 @@ const LocationHint = props => {
     bossIcons = [], // to override the boss icons
     showItems = true, // Show or not the right icons
     itemsIcons = [], //
+    swappable = false // allowing this component to be eligible for swapping icons on drag
   } = props;
 
   const [hasValue, setHasValue] = useState(false);
@@ -47,6 +48,7 @@ const LocationHint = props => {
           size={[20, 20]}
           icons={bossIcons}
           customStyle={{ marginRight: "0.25rem" }}
+          swappable={swappable}
         />
       )}
       <CustomReactSelect
@@ -66,6 +68,7 @@ const LocationHint = props => {
             size={[20, 20]}
             icons={itemsIcons}
             customStyle={{ marginLeft: "0.25rem" }}
+            swappable={swappable}
             receiver
           />
           <Element
@@ -75,6 +78,7 @@ const LocationHint = props => {
             size={[20, 20]}
             icons={itemsIcons}
             customStyle={{ marginLeft: "0.25rem" }}
+            swappable={swappable}
             receiver
           />
           <Element
@@ -84,6 +88,7 @@ const LocationHint = props => {
             size={[20, 20]}
             icons={itemsIcons}
             customStyle={{ marginLeft: "0.25rem" }}
+            swappable={swappable}
             receiver
           />
           <Element
@@ -93,6 +98,7 @@ const LocationHint = props => {
             size={[20, 20]}
             icons={itemsIcons}
             customStyle={{ marginLeft: "0.25rem" }}
+            swappable={swappable}
             receiver
           />
         </Fragment>

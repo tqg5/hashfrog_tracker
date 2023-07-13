@@ -107,6 +107,7 @@ const Layout = props => {
         case "element": {
           const element = getCacheElement(component.elementId);
           const [top, left] = component.position;
+
           return (
             <div key={component.id} className="layout-component" style={{ top, left }}>
               <Element
@@ -118,6 +119,7 @@ const Layout = props => {
                 selectedStartingIndex={component.selectedStartingIndex}
                 countConfig={component.countConfig}
                 labelStartingIndex={component.labelStartingIndex}
+                swappable={component.swappable}
               />
             </div>
           );
@@ -125,6 +127,7 @@ const Layout = props => {
         case "table": {
           const elements = component.elements.map(x => getCacheElement(x));
           const [top, left] = component.position;
+
           return (
             <div key={component.id} className="layout-component" style={{ top, left }}>
               <ElementsTable
@@ -133,6 +136,7 @@ const Layout = props => {
                 elementsSize={component.elementsSize}
                 columns={component.columns}
                 padding={component.padding}
+                swappable={component.swappable}
               />
             </div>
           );
@@ -140,6 +144,7 @@ const Layout = props => {
         case "sometimeshint": {
           const element = getCacheElement(component.elementId);
           const [top, left] = component.position;
+
           return (
             <div key={component.id} className="layout-component" style={{ top, left }}>
               <SometimesHint
@@ -152,6 +157,7 @@ const Layout = props => {
                 showIcon={component.showIcon}
                 inverted={component.inverted}
                 dual={component.dual}
+                swappable={component.swappable}
               />
             </div>
           );
@@ -160,6 +166,7 @@ const Layout = props => {
           const element = getCacheElement(component.elementId);
           const bossElement = getCacheElement("9e6f493869f84c19b23081bdb92bc621");
           const [top, left] = component.position;
+
           return (
             <div key={component.id} className="layout-component" style={{ top, left }}>
               <LocationHint
@@ -169,6 +176,7 @@ const Layout = props => {
                 backgroundColor={component.backgroundColor}
                 showBoss={component.showBoss}
                 showItems={component.showItems}
+                swappable={component.swappable}
                 labels={component.labels}
                 {...(bossElement && bossElement.icons && { bossIcons: bossElement.icons })}
                 {...(element && element.icons && { itemsIcons: element.icons })}
@@ -199,6 +207,7 @@ const Layout = props => {
                 showBoss={component.showBoss}
                 showItems={component.showItems}
                 dual={component.dual}
+                swappable={component.swappable}
               />
             </div>
           );

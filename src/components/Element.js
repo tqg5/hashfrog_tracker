@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Fragment, useCallback, useMemo, useState } from "react";
 
-import { useElement, useItems } from "../context/trackerContext";
+import { useElement, useItems, useTracker } from "../context/trackerContext";
 
 // Base Icons
 import icon_check from "../assets/icons/check_16x16.png";
@@ -31,10 +31,12 @@ const Element = props => {
     dragCurrent = false, // if dragging should default or drag the current selected
     selectedStartingIndex = 0, // on which of the icons we start
     items = [],
+    swappable = false
   } = props;
 
   const { markCounter, markItem, startingIndex: trackerContextStartingIndex, startingItem } = useItems(items);
   useElement(id, startingItem);
+  const { state: { swap_icons_funcs } } = useTracker();
 
   const [selected, setSelected] = useState(trackerContextStartingIndex || selectedStartingIndex);
   const [counter, setCounter] = useState(0);
@@ -99,8 +101,10 @@ const Element = props => {
       if (dragCurrent) dragIcon = icons[selected];
       const item = JSON.stringify({ icon: dragIcon });
       event.dataTransfer.setData("item", item);
+      console.log('swappable', swappable)
+      swappable && swap_icons_funcs.setFromData(setDraggedIcon);
     },
-    [dragCurrent, icons, selected, draggedIcon],
+    [dragCurrent, icons, selected, draggedIcon, swap_icons_funcs, swappable],
   );
 
   const dropHandler = useCallback(
@@ -110,10 +114,19 @@ const Element = props => {
       if (receiver) {
         const item = event.dataTransfer.getData("item");
         const { icon } = JSON.parse(item);
+        
+        const fromDraggedIcon = swap_icons_funcs.getFromDraggedIcon();
+        console.log('drop swappable', swappable)
+
+        if(draggedIcon && swappable && fromDraggedIcon) {
+          fromDraggedIcon(draggedIcon);
+          swap_icons_funcs.setFromData(null);
+        }
+
         setDraggedIcon(icon);
       }
     },
-    [receiver],
+    [receiver, swap_icons_funcs, draggedIcon, swappable],
   );
 
   return (
@@ -151,6 +164,7 @@ const Element = props => {
             icons={[icon_unknown, icon_check]}
             size={[16, 16]}
             customStyle={nestedStyles}
+            swappable={swappable}
             receiver
           />
         )}

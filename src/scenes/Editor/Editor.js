@@ -21,6 +21,7 @@ function prepareLayout(rawLayout) {
             size: [25, 25],
             receiver: false,
             dragCurrent: false,
+            swappable: false,
             selectedStartingIndex: 0,
             countConfig: [0, 5],
             labelStartingIndex: 0,
@@ -35,6 +36,7 @@ function prepareLayout(rawLayout) {
             padding: "2px",
             elements: [],
             elementsSize: [25, 25],
+            swappable: false,
             ...component,
           };
         case "sometimeshint":
@@ -49,6 +51,7 @@ function prepareLayout(rawLayout) {
             backgroundColor: "#333333",
             showIcon: true,
             inverted: false,
+            swappable: false,
             ...component,
           };
         case "locationhint":
@@ -63,6 +66,7 @@ function prepareLayout(rawLayout) {
             backgroundColor: "#4a8ab6",
             showBoss: true,
             showItems: true,
+            swappable: false,
             ...component,
           };
         case "hinttable":
@@ -83,6 +87,7 @@ function prepareLayout(rawLayout) {
             inverted: false,
             showBoss: true,
             showItems: true,
+            swappable: false,
             ...component,
           };
         case "label":

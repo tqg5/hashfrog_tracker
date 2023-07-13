@@ -49,7 +49,8 @@ const EditorElement = ({ element, setElement }) => {
         }
         // Checkbox
         case "dragCurrent":
-        case "receiver": {
+        case "receiver":
+        case "swappable": {
           setElement(prev => ({
             ...prev,
             [name]: !prev[name],
@@ -349,7 +350,20 @@ const EditorElement = ({ element, setElement }) => {
           Drag currently selected
         </label>
       </div>
-
+      <div className="form-check mb-2">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="swappable"
+          name="swappable"
+          checked={element.swappable}
+          value={element.swappable}
+          onChange={handleChange}
+        />
+        <label htmlFor="swappable" className="form-check-label">
+          Swappable (able to swap with dragged item)
+        </label>
+      </div>
       <div className="mb-2">
         <label htmlFor="icon" className="form-label">
           Add Icons to Element

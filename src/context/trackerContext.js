@@ -373,6 +373,19 @@ function setGeneratorVersionCache(version) {
   localStorage.setItem("generator_version", version);
 }
 
+const IconSwapper = function setFromElementSetting() {
+  let setFromDraggedIcon = null;
+
+  return {
+    setFromData: function(func) {
+      setFromDraggedIcon = func;
+    },
+    getFromDraggedIcon: function() {
+      return setFromDraggedIcon;
+    }
+  }
+}
+
 function reducer(state, action) {
   const { payload } = action;
   switch (action.type) {
@@ -591,6 +604,7 @@ function TrackerProvider(props) {
     layoutElements: [],
     settings_string: getSettingsStringCache(),
     generator_version: getGeneratorVersionCache(),
+    swap_icons_funcs: IconSwapper()
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);

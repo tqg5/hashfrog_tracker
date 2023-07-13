@@ -17,6 +17,8 @@ const SometimesHint = props => {
     backgroundColor = "#333333", // background color for input
     inverted = false, // switch place of the icon/item
     dual = false, // show two items
+    swappable = false // allowing this component to be eligible for swapping icons on drag
+
   } = props;
 
   const memoizedOptions = useMemo(() => {
@@ -44,6 +46,7 @@ const SometimesHint = props => {
           size={[20, 20]}
           icons={icons}
           customStyle={inverted ? { marginRight: "0.25rem" } : { marginLeft: "0.25rem" }}
+          swappable={swappable}
           receiver
         />
       )}
@@ -55,6 +58,7 @@ const SometimesHint = props => {
           size={[20, 20]}
           icons={icons}
           customStyle={inverted ? { marginRight: "0.25rem" } : { marginLeft: "0.25rem" }}
+          swappable={swappable}
           receiver
         />
       )}
